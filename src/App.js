@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import api from "./api/axiosConfig";
 
 function App() {
-  const [user, setUser] = useState(null); // 현재 로그인한 유저의 이름
+  const [user, setUser] = useState(null); // 현재 로그인한 유저의 아이디(username)
   const checkUser = async () => {
     try {
       const res = await api.get("/api/auth/me");

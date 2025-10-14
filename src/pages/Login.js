@@ -11,7 +11,7 @@ const Login = ({ onLogin }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      // 백엔드에서 Parameter로 받기로 되어 있기 때문에 URLSearchParams 이용해야 함
+      // 폼 데이터 방식이라 URLSearchParams로 전송
       await api.post("/api/auth/login", new URLSearchParams({ username, password }));
       // 현재 로그인한 사용자 정보 가져오기
       const res = await api.get("/api/auth/me");
