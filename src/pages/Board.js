@@ -2,10 +2,12 @@ import api from "../api/axiosConfig.js";
 import "./Board.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import BoardDetail from "./BoardDetail.js";
 
 const Board = ({ user }) => {
   const [posts, setPosts] = useState([]); // 모든 글 목록
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(true); // 로딩중
 
   // 모든 게시글 요청(get)
   const loadPosts = async () => {
@@ -14,11 +16,23 @@ const Board = ({ user }) => {
       setPosts(res.data);
     } catch (error) {
       console.error(error);
+      setPosts([]);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
     loadPosts();
   }, []); // 첫 랜더링 될 때 무조건 loadPosts() 실행하기
+
+  const handleWrite = () => {
+    // 이 방법은 한계가 있음(url 직접 접근 시 막을 수 없음)
+    if (!user) {
+      alert("로그인한 유저만 작성 가능합니다.");
+      return;
+    }
+    navigate("/board/write");
+  };
 
   // 날짜 포맷팅
   const formatDate = (dateString) => {
@@ -32,6 +46,7 @@ const Board = ({ user }) => {
   return (
     <div className="container">
       <h2>게시판</h2>
+      {loading && <p>글 리스트 로딩 중...</p>}
       <table className="board-table">
         <thead>
           <tr>
@@ -49,7 +64,10 @@ const Board = ({ user }) => {
               .map((it, index) => (
                 <tr key={it.id}>
                   <td>{posts.length - index}</td>
-                  <td>{it.title}</td>
+                  {/* 제목을 클릭했을 때 id를 받아서 navigate로 이동 시키게 만들기 */}
+                  <td onClick={() => navigate(`/board/${it.id}`)} className="board-title">
+                    {it.title}
+                  </td>
                   <td>{it.author.username}</td>
                   <td>{formattedDate(it.createdAt)}</td>
                 </tr>
@@ -62,12 +80,12 @@ const Board = ({ user }) => {
         </tbody>
       </table>
       <div className="write-button-container">
-        {/* 글쓰기 버튼을 눌렀을 때 navigate를 이용해서 글쓰기 페이지로 이동시켜주기 */}
-        <button onClick={() => navigate("/board/write")} className="write-button">
+        <button onClick={handleWrite} className="write-button">
           글쓰기
         </button>
       </div>
     </div>
   );
 };
+
 export default Board;
