@@ -7,6 +7,7 @@ const Navbar = ({ onLogout, user }) => {
       <nav className="navbar">
         <div className="logo">회사 게시판</div>
         <div className="menu">
+          {user && <span>{user}님 로그인 중!</span>}
           <Link to="/">Home</Link>
           <Link to="/board">게시판</Link>
           {!user && <Link to="/login">로그인</Link>}
